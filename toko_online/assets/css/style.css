@@ -525,3 +525,19 @@ h1, h2 {
 .button:hover {
     background-color: #0056b3;
 }
+
+.button {
+    display: inline-block;
+    background-color: #007bff;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.3s;
+    margin-top: 10px; /* Tambahkan margin untuk pemisahan */
+}
+
+.button:hover {
+    background-color: #0056b3;
+}

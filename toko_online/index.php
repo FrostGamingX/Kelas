@@ -2,6 +2,28 @@
 session_start(); 
 include 'config/database.php'; 
 include 'includes/header.php'; 
+
+// Cek jika ada permintaan untuk menambahkan produk ke keranjang
+if (isset($_POST['add_to_cart'])) {
+    $productId = $_POST['product_id'];
+    $quantity = $_POST['quantity'];
+
+    // Inisialisasi keranjang jika belum ada
+    if (!isset($_SESSION['cart'])) {
+        $_SESSION['cart'] = [];
+    }
+
+    // Tambahkan produk ke keranjang
+    if (isset($_SESSION['cart'][$productId])) {
+        $_SESSION['cart'][$productId] += $quantity; // Jika sudah ada, tambahkan jumlah
+    } else {
+        $_SESSION['cart'][$productId] = $quantity; // Jika belum ada, set jumlah
+    }
+
+    // Redirect ke cart.php setelah menambahkan produk
+    header("Location: cart.php");
+    exit();
+}
 ?>
 
 <!DOCTYPE html>
@@ -34,10 +56,14 @@ include 'includes/header.php';
         echo "<div class='product'>";
         echo "<h2>" . htmlspecialchars($row['name']) . "</h2>";
         echo "<p>" . htmlspecialchars($row['description']) . "</p>";
-        echo "<p>Harga: " . htmlspecialchars($row['price']) . "</p>";
+        echo "<p>Harga: Rp " . number_format($row['price'], 2, ',', '.') . "</p>";
         echo "<img src='assets/images/" . htmlspecialchars($row['image']) . "' alt='" . htmlspecialchars($row['name']) . "'>";
-        echo "<a href='product.php?id=" . htmlspecialchars($row['id']) . "'>Lihat Detail</a>";
-        echo "<button class='add-to-cart' data-id='" . htmlspecialchars($row['id']) . "'>Tambah ke Keranjang</button>";
+        echo "<form action='' method='POST'>";
+        echo "<input type='hidden' name='product_id' value='" . htmlspecialchars($row['id']) . "'>";
+        echo "<input type='number' name='quantity' value='1' min='1' required>";
+        echo "<button type='submit' name='add_to_cart' class='add-to-cart'>Tambah ke Keranjang</button>";
+        echo "</form>";
+        echo "<a href='product.php?id=" . htmlspecialchars($row['id']) . "' class='button'>Lihat Detail</a>";
         echo "</div>";
     }
     ?>
